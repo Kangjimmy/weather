@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -46,6 +47,26 @@ public class DiaryService {
         nowDiary.setDate(date);
 
         diaryRepository.save(nowDiary);
+    }
+
+    public List<Diary> readDiary(LocalDate date) {
+
+        return diaryRepository.findAllByDate(date);
+    }
+
+    public List<Diary> readDiaries(LocalDate startDate, LocalDate endDate) {
+        return diaryRepository.findAllByDateBetween(startDate, endDate);
+    }
+
+    public void updateDiary(LocalDate date, String text) {
+        Diary nowDiary = diaryRepository.getFirstByDate(date);
+
+        nowDiary.setText(text);
+        diaryRepository.save(nowDiary);
+    }
+
+    public void deleteDiary(LocalDate date) {
+        diaryRepository.deleteAllByDate(date);
     }
 
     private String getWeatherString() {
@@ -100,26 +121,4 @@ public class DiaryService {
 
         return resultMap;
     }
-//    private Map<String, Object> parseWeather(String jsonString) {
-//        JSONParser jsonParser = new JSONParser();
-//        JSONObject jsonObject;
-//
-//        try {
-//            jsonObject = (JSONObject) jsonParser.parse(jsonString);
-//
-//        } catch (ParseException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        Map<String, Object> resultMap = new HashMap<>();
-//
-//        JSONObject mainData = (JSONObject) jsonObject.get("main");
-//        resultMap.put("temp", mainData.get("temp"));
-//        JSONArray weatherArray = (JSONArray) jsonObject.get("weather");
-//        JSONObject weatherData = (JSONObject) weatherArray.get(0);
-//        resultMap.put("main", weatherData.get("main"));
-//        resultMap.put("icon", weatherData.get("icon"));
-//
-//        return resultMap;
-//    }
 }
